@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Main app widget
 void main() {
   runApp(const MyApp());
 }
@@ -22,7 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Sign Up Screen Widget
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -55,12 +53,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    // Save username and password in SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("username", username);
     await prefs.setString("password", password);
 
-    // After signing up, redirect to login screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -115,7 +111,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-// Login Screen Widget
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -144,7 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (username == storedUsername && password == storedPassword) {
-      // Login successful
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const NewsFeedScreen()),
@@ -198,7 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// News Feed Screen Widget
 class NewsFeedScreen extends StatelessWidget {
   const NewsFeedScreen({super.key});
 
@@ -207,7 +200,7 @@ class NewsFeedScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('News Feed')),
       body: ListView.builder(
-        itemCount: 10, // Example count of news articles
+        itemCount: 10,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text('News Item ${index + 1}'),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'news_feed_screen.dart'; // Your news feed screen
+import 'news_feed_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (username == storedUsername && password == storedPassword) {
-      // If the login is successful, set the logged-in flag
       await prefs.setBool("isLoggedIn", true);
       Navigator.pushReplacement(
         context,
@@ -101,9 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  // Implement forgot password action
-                },
+                onTap: () {},
                 child: Text(
                   "Forgot Password?",
                   style: TextStyle(color: Colors.deepPurple, fontSize: 14),
@@ -112,7 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  // Navigate to the Sign Up screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignUpScreen()),

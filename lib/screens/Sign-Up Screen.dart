@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_screen.dart'; // Redirect to login screen after sign up
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -32,12 +32,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    // Save username and password in SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("username", username);
     await prefs.setString("password", password);
 
-    // Redirect to the login screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginScreen()),
