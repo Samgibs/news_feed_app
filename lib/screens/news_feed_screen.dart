@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
+import 'news_service.dart';
 
 class NewsFeedScreen extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class NewsFeedScreen extends StatefulWidget {
 
 class _NewsFeedScreenState extends State<NewsFeedScreen> {
   List<dynamic> _newsList = [];
-  final String apiKey = "067c493d181146cab14d1a5331cc7291";
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -18,50 +18,51 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   }
 
   Future<void> _fetchNews() async {
-    final response = await http.get(Uri.parse(
-        "https://newsapi.org/v2/top-headlines?country=us&apiKey=$apiKey"));
-    if (response.statusCode == 200) {
+    try {
+      NewsService newsService = NewsService();
+      final news = await newsService.fetchNews();
       setState(() {
-        _newsList = json.decode(response.body)["articles"];
+        _newsList = news;
+        _isLoading = false;
       });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to load news. Please try again later."),
+        backgroundColor: const Color.fromARGB(255, 230, 22, 7),
+      ));
     }
   }
 
-  void _showNewsDetail(String title, String description) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(description),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context), child: Text("Close"))
-          ],
-        );
-      },
-    );
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not open the URL';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("News Feed")),
-      body: _newsList.isEmpty
+      body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _newsList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_newsList[index]["title"]),
-                  subtitle: Text(_newsList[index]["source"]["name"]),
-                  onTap: () => _showNewsDetail(
-                      _newsList[index]["title"],
-                      _newsList[index]["description"] ??
-                          "No description available"),
-                );
-              },
-            ),
+          : _newsList.isEmpty
+              ? Center(child: Text("No news available"))
+              : ListView.builder(
+                  itemCount: _newsList.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_newsList[index]["title"] ?? "No Title"),
+                      subtitle: Text(_newsList[index]["source"]["name"] ??
+                          "Unknown Source"),
+                      onTap: () => _launchURL(_newsList[index]["url"] ?? ""),
+                    );
+                  },
+                ),
     );
   }
 }
