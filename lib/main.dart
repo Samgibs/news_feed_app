@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:news_feed_app/screens/news_service.dart';
+import 'package:news_feed_app/screens/article_detail_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -285,42 +286,19 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                               ],
                             ),
                             onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(title),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (imageUrl.isNotEmpty)
-                                          Image.network(
-                                            imageUrl,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return const Icon(
-                                                  Icons.image_not_supported,
-                                                  size: 50);
-                                            },
-                                          ),
-                                        const SizedBox(height: 10),
-                                        Text(description),
-                                        const SizedBox(height: 10),
-                                        Text('Author: $author'),
-                                        Text('Source: $source'),
-                                        Text('Published at: $publishedAt'),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Close'),
-                                      ),
-                                    ],
-                                  );
-                                },
+                              // Navigate to the ArticleDetailScreen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ArticleDetailScreen(
+                                    title: title,
+                                    description: description,
+                                    imageUrl: imageUrl,
+                                    author: author,
+                                    source: source,
+                                    publishedAt: publishedAt,
+                                  ),
+                                ),
                               );
                             },
                           ),
